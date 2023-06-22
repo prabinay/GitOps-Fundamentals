@@ -1,0 +1,54 @@
+What is GitOps
+Deploying new versions of your application with a high degree of confidence is a desirable goal as getting features reliably to production is one of the most important characteristics of fast-moving organizations.
+
+In a cloud environment, problematic deployment methods can quickly become the bottleneck. Having the capability to instantly spin up new infrastructure doesn’t always mean that your application developers can take advantage of the new infrastructure in the most optimal way.
+
+GitOps is a set of best practices where the entire code delivery process is controlled via Git, including infrastructure and application definition as code and automation to complete updates and rollbacks.
+
+The Key GitOps Principles:
+
+The entire system (infrastructure and applications) is described declaratively.
+The canonical desired system state is versioned in Git.
+Changes approved are automated and applied to the system.
+Software agents ensure correctness and alert on divergence.
+
+You can find a full description of GitOps principles at https://opengitops.dev/
+
+
+In the case of Kubernetes, GitOps deployments happen in the following manner:
+
+A GitOps agent is deployed on the cluster.
+The GitOps agent is monitoring one or more Git repositories that define applications and contain Kubernetes manifests (or Helm charts or Kustomize files).
+Once a Git commit happens the GitOps agent is instructing the cluster to reach the same state as what is described in Git.
+Developers, operators. and other stakeholders perform all changes via Git operations and never directly touch the cluster (or perform manual kubectl commands).
+
+Here is a traditional deployment without GitOps:
+
+A developer commits source code for the application.
+A CI system builds the application and may also perform additional actions such as unit tests, security scans, static checks, etc.
+The container image is stored in a Container registry.
+The CI platform (or other external system) with direct access to the Kubernetes cluster creates a deployment using a variation of the “kubectl apply” command.
+The application is deployed on the cluster.
+
+Some important points here are:
+The cluster state is manually decided by kubectl commands or other API access.
+The platform that deploys to the cluster is having full access to the Kubernetes cluster from an external point.
+
+With GitOps, we can modify the process as below:
+
+The first steps are the same. A developer commits source code for the application and the CI system creates a container image that is pushed to a registry.
+Nobody has direct access to the Kubernetes cluster. There is a second Git repository that has all manifests that define the application.
+Another human or an automated system changes the manifests in this second Git repository.
+A GitOps controller that is running inside the cluster is monitoring the Git repository and as soon as a change is made, it changes the cluster state to match what is described in Git.
+
+The key points here are:
+The state of the cluster is always described in Git. Git holds everything for the application and not just the source code.
+There is no external deployment system with full access to the cluster. The cluster itself is pulling changes and deployment information.
+The GitOps controller is running in a constant loop and always matches the Git state with the cluster state.
+
+An example application that follows this pattern can be found at the following Git repositories:
+
+https://github.com/codefresh-contrib/gitops-app-source-code
+https://github.com/codefresh-contrib/gitops-kubernetes-configuration
+
+The first repository contains only the source code of an application and a Dockerfile. The second repository contains Kubernetes manifests and is the one that is monitored by the GitOps controller that is running inside the cluster

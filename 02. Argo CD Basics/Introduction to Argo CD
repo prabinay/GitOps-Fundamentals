@@ -1,0 +1,27 @@
+Introduction to Argo CD
+In the context of this course, we will apply GitOps practices to Kubernetes applications. As a GitOps controller, we will use the popular Argo CD project.
+
+Argo CD implements all GitOps principles that we described in the following way:
+
+You install Argo CD as a controller in the Kubernetes cluster. Usually you install Argo CD on the same cluster that it manages. It is also possible for Argo CD to manage external clusters.
+You store your manifests in Git. Argo CD is agnostic on the type of manifests you can use. It supports plain Kubernetes manifests, Helm charts, Kustomize definitions, and other templating mechanisms.
+You create an Argo CD application by defining which Git repository to monitor and to which cluster/namespace this application should be installed.
+From now on, Argo CD monitors the Git repository, and when there is a change, it automatically brings the cluster to the same state.
+Optionally Argo CD can deploy applications to other clusters (and not just the one on which it is installed).
+
+This is the basic deployment capability, Argo CD also comes with several other features (described in later sections) such as:
+
+Manual or automatic sync
+Definition of sync waves/windows
+Declarative configuration of applications
+
+Argo CD contains an integrated UI that shows you the structure of your application as well as the synchronization status (whether the cluster matches Git at any point in time).
+
+Argo CD is just one member of the Argo family of projects. These are:
+
+Argo CD (GitOps controller)
+Argo Rollouts (Progressive Delivery controller)
+Argo Workflows (Workflow engine for Kubernetes)
+Argo Events (Event handling for Kubernetes)
+
+All Argo projects are self-contained and can be used independently. They also synergize very well when installed together. In this course, you will learn more about Argo CD and Argo Rollouts.

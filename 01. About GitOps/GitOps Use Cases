@@ -1,0 +1,49 @@
+GitOps Use Cases
+
+
+Now that you know the basic principles of GitOps, we can talk about the use cases and where you can apply GitOps in your own organization.
+
+Continuous deployment of applications
+Adopting GitOps for this scenario will be easy if you have already adopted Kubernetes and your applications are handled in a declarative manner. A Git repository is always available since you should already have that set up for your source code.
+
+
+
+This is probably the most popular use of GitOps and the one that is applicable to most organizations. Using GitOps for the applications developed by your own organization is one of the most straightforward scenarios for applying GitOps and seeing the benefits it offers.
+
+
+Continuous deployment of cluster resources
+After you adopt GitOps for your own applications, it makes sense to embrace the same principles for your supporting applications that you manage but not necessarily develop. In the case of Kubernetes, these are the applications that take part in the cluster such as metrics, networking agents, service meshes, database, etc.
+
+
+
+Using GitOps for those applications will not only allow you to use a single method for handling your cluster, but it will also bring all the benefits of GitOps (e.g. easy rollback) to applications that have a bigger reach outside of your development team.
+
+
+
+Don’t forget also that you can (and should) manage your own GitOps agents with GitOps!
+
+
+Continuous deployment of infrastructure
+Adopting GitOps for the application is a great step, but you can continue this paradigm to other layers of the infrastructure. If you have a way to define your resources in a declarative way, it should be very easy to adopt the GitOps principles for the infrastructure that powers your applications.
+
+In the case of Kubernetes, there are several ways you can represent that cluster itself and associated services (e.g. registries) as declarative resources and manage them with GitOps. This means that you automatically get the benefits of GitOps (fast deployments, easy rollbacks, etc.) for the low-level components of your application and not just the application itself.
+
+If you are already familiar with IaC (Infrastructure as Code), the transition to GitOps will be even easier for you. Also note that there are newer tools such as Crossplane created specifically for managing your infrastructure in the same way that you manage your Kubernetes applications.
+
+Detecting/Avoiding configuration drift
+One of the most important tenets of GitOps is the automatic reconciliation of what is described in Git versus what is described in the cluster. In most cases, this is how you should set up your GitOps agent, and any change in Git should be automatically transferred to the cluster.
+
+You can also set up your agent so that instead of applying any change immediately, it will just notify you of the discrepancy. And most GitOps agents can work both ways. They can detect changes to Git that are not part of the cluster, or changes in the cluster that were never described in Git.
+
+This is a great way to detect manual (or even unauthorized) changes in your cluster. Ad-hoc changes on infrastructure are a well known problem. Configuration drift between what you think is on a server and what is actually on the server is one of the most common causes of failed deployments.
+
+In the case of Kubernetes, performing manual changes via kubectl is a practice that GitOps can completely eliminate. And even if somebody makes some changes using kubectl, your GitOps agents should notify you immediately. Then it is up to you decide if you want to discard them (and whatever Git has) or accept them (and commit them back to Git)
+
+This power of detecting configuration drift early is one of the major differences between GitOps and traditional deployment solutions.
+
+Multi-cluster deployments
+Deploying to a single cluster is already a challenge on its own. If you have multiple clusters at different geographical locations or with different configurations, you need a way to track them and understand how they are different.
+
+This is one of the cases where GitOps really shines. Because the state of all clusters is stored in Git, it is very easy to know what is installed where, who installed it, and when just by looking at the Git history.
+
+A very common question when it comes to multiple environments is finding out what is different between them. If you follow GitOps, the answer is always there just by doing a simple git diff.
