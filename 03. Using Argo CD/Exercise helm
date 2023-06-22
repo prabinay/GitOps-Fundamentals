@@ -1,0 +1,78 @@
+Because GitOps is all about Git, we will use Github for this exercise.
+
+The example application is at https://github.com/codefresh-contrib/gitops-certification-examples/tree/main/helm-app
+
+Objectives
+In this track, this is what you'll learn:
+
+How the Argo CD UI works
+How the Argo CD CLI works
+How to deploy an application with a Helm chart
+
+Ex 1
+Using the ArgoCD GUI
+We installed Argo CD for you and you can login in the UI tab.
+
+The UI starts empty because nothing is deployed on our cluster. Click the "NEW APP" button on the top left and fill the following details:
+
+application name : helm-gitops-example
+project: default
+sync policy: automatic
+repository URL: https://github.com/codefresh-contrib/gitops-certification-examples
+path: ./helm-app/
+Cluster: https://kubernetes.default.svc (this is the same cluster where ArgoCD is installed)
+Namespace: default
+Leave all the other values empty or with default selections. Note that in the case of Helm charts you can also override specific values at the bottom of the dialog. This is completely optional as our Helm chart already has the correct values.yaml file.
+
+Finally click the Create button. The application entry will appear in the main dashboard. Click on it.
+
+Congratulations! Your have setup your first Helm application with GitOps. You should see the following:
+
+Helm app
+
+You can verify the deployment with
+
+kubectl get deployment
+Note that if you use any of the helm commands such as helm list you will not see anything at all. A Helm chart deployed by ArgoCD no longer registers as a Helm deployment. This is because ArgoCD doesn't include the Helm payload information. When deploying a Helm application, Argo CD runs "helm template" and deploys the resulting manifests.
+
+
+
+Ex 2
+You can manage your Argo CD installations either from the Web Interface or using the Command Line.
+
+Using ArgoCD CLI
+Step 1
+Apart from the UI, ArgoCD also has a CLI. We have installed already the cli for you and authenticated against the instance.
+
+Try the following commands
+
+argocd app list
+argocd app get helm-gitops-example
+argocd app history helm-gitops-example
+Let's delete the application and deploy it again but from the CLI this time.
+
+First delete the app
+
+argocd app delete helm-gitops-example
+Confirm the deletion by answering yes in the terminal. The application will disappear from the Argo CD dashboard after some minutes.
+
+Now deploy it again.
+
+argocd app create demo \
+--project default \
+--repo https://github.com/codefresh-contrib/gitops-certification-examples \
+--path "./helm-app/" \
+--sync-policy auto \
+--dest-namespace default \
+--dest-server https://kubernetes.default.svc
+The application will appear again in the ArgoCD dashboard.
+
+Confirm the deployment
+
+kubectl get all
+Finish
+If you've confirmed the deployment, click Check to finish this track.
+
+
+
+Ex 3

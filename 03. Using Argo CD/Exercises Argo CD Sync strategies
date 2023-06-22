@@ -1,0 +1,122 @@
+Argo CD Sync strategies
+You need to have a GitHub account for this exercise.
+
+The example application is at https://github.com/codefresh-contrib/gitops-certification-examples/tree/main/sync-strategies. Fork this repository in your own account.
+
+Objectives
+In this track, this is what you'll learn:
+
+How to use auto-sync
+How to use self-heal
+How to use auto-prune
+Please wait while we boot the 
+
+Ex 1
+
+Auto-sync
+We installed Argo CD for you and you can login in the UI tab.
+
+The UI starts empty because nothing is deployed on our cluster. Click the "New app" button on the top left and fill the following details:
+
+application name : demo
+project: default
+SYNC POLICY: automatic
+repository URL: https://github.com/<your user>/gitops-certification-examples
+path: ./sync-strategies
+Cluster: https://kubernetes.default.svc (this is the same cluster where ArgoCD is installed)
+Namespace: default
+Leave all the other values empty or with default selections. Finally click the Create button. The application entry will appear in the main dashboard. Click on it.
+
+Since we have selected the auto-sync strategy, Argo CD will autodeploy the application right away (because the cluster state is not the same as the commit state)
+
+You should see the following:synced app
+
+You can also verify the application from the command line with:
+
+kubectl get deployments
+Once you are ready to proceed, press Check.
+
+
+
+EX 2
+Fully automated deployments with auto sync
+Deploy a new version with AutoSync
+If you look at the "Deployed app" tab you will see that our application is at version 1.0
+
+We want to deploy another version of our application. We will change the Git and see how Argo CD detects the change and automatically deploys (since we have set sync strategy to auto).
+
+Perform a commit in your sync-strategies/deployment.yml file in your own account (You can use GitHub on another tab for this) and change the container tag at line 18 from v1.0 to v2.0
+
+Normally Argo CD checks the state between Git and the cluster every 3 minutes on its own. Just to speed things up you should click manually on the application in the Argo CD dashboard and press the "Refresh" button
+
+You should see the following.git-change
+
+The application is already deployed. If you click the "refresh" button in the top right corner of the "Deployed App" tab you will see the version 2 is now live.
+
+Once you are ready to proceed, press Check.
+
+
+Ex 3
+Avoid manual changes in your cluster
+
+Enabling self-heal
+Step 1
+Autosync will automatically deploy your application as soon as the Git repository changes. But if somebody makes a manual change in the cluster state, Argo CD will not do anything by default (it will still mark the application as out-of-sync).
+
+You can enable the self-heal option to tell Argo CD to discard any changes done manually to the cluster. This is a great advantage as it always makes your environments bulletproof against ad-hoc changes via kubectl.
+
+Execute the following
+
+kubectl scale --replicas=3 deployment simple-deployment
+You have manually changed the cluster
+
+Now go the Argo CD dashboard and click on the application. In the Application screen click the top left "App Details" button.
+
+Scroll down and find the "Sync policy section". Click on the "Self-heal" button to enable it. Answer ok to the confirmation dialog.
+
+The manual change will be discarded and replicas are back to one .
+
+You can now try changing anything on the cluster and all changes will always be discarded (as they are not part of Git).
+
+Try in the terminal again.
+
+kubectl scale --replicas=3 deployment simple-deployment
+kubectl get deployment simple-deployment
+Your application will always have 1 pod deployed. This is what the Git state says and therefore Argo CD automatically makes the cluster state the same.
+
+Finish
+Once you are ready to proceed, press Check.
+
+
+
+Ex 4
+
+Delete resources with just a Git commit
+Enable auto-prune
+Even after having auto-sync on and self-heal on, Argo CD will never delete resources from the cluster if you remove them in Git.
+
+To enable this behavior you need to enable the auto-prune option.
+
+First make a commit at your Git repo by deleting the sync-strategies/deployment.yml file.
+
+Then click the "Refresh" button in the ArgoCD dashboard. ArgoCD will detect the change and mark the application as "Out of sync". But the deployment will still be there.
+
+You should see the following.No prune
+
+You can still see the deployment with
+
+kubectl get deployment simple-deployment
+Go the Argo CD dashboard and click on the application. In the Application screen click the top left "App Details" button.
+
+Scroll down and find the "Sync policy section". Click on the "Prune resources" button to enable it. Answer ok to the confirmation dialog.
+
+Close the settings window and click again the "Refresh" button in the application.
+
+Now your deployment will be removed (since it does not exist in Git).
+
+Check again:
+
+kubectl get deployment
+Finish
+Once you are ready to finish the track, press Check.
+

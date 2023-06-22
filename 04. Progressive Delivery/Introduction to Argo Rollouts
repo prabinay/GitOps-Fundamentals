@@ -1,0 +1,12 @@
+Introduction to Argo Rollouts
+Argo Rollouts is a progressive delivery controller created for Kubernetes. It allows you to deploy your application with minimal/zero downtime by adopting a gradual way of deploying instead of taking an “all at once” approach.
+
+Argo Rollouts supercharges your Kubernetes cluster and in addition to the rolling updates you can now do:
+
+Blue/green deployments
+Canary deployments
+A/B tests
+Automatic rollbacks
+Integrated Metric analysis
+
+Let’s see how this works in practice.
